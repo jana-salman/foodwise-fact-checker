@@ -1,70 +1,84 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronDown, Eye, Lightbulb, CheckSquare, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Shell } from "@/components/Shell";
+import { HeroVisual } from "@/components/HeroVisual";
 import { LESSONS } from "@/lib/lessons";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "FoodWise — Think Before You Trust AI" },
-      { name: "description", content: "Learn five rules for critically checking ChatGPT and Gemini food and nutrition answers." },
+      {
+        name: "description",
+        content:
+          "FoodWise helps you check AI food and nutrition advice. Spot red flags and learn how to verify claims yourself.",
+      },
       { property: "og:title", content: "FoodWise — Think Before You Trust AI" },
-      { property: "og:description", content: "Five rules for checking AI food and nutrition advice." },
+      {
+        property: "og:description",
+        content: "Spot red flags in AI food advice and learn how to verify it.",
+      },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-  const [open, setOpen] = useState<number | null>(1);
   return (
     <Shell>
-      <section className="text-center py-6">
-        <p className="text-xs uppercase tracking-widest text-primary font-semibold">AI literacy · AGSC 205</p>
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold mt-3">Before You Trust AI With Your Food</h1>
-        <p className="mt-3 text-lg text-muted-foreground">AI sounds confident. But is it always correct?</p>
-        <p className="mt-4 max-w-2xl mx-auto text-sm leading-relaxed">
-          Chatbots like ChatGPT and Gemini can misread labels, mix up units and make safety claims they can't back up.
-          These five rules help you check their food answers yourself — no extra AI needed.
-        </p>
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-10 pt-10 md:pt-16 lg:grid-cols-[1.1fr_0.9fr]">
+        <div>
+          <h1 className="text-balance text-4xl font-semibold leading-[1.1] sm:text-5xl lg:text-6xl">
+            AI Sounds Confident. <span className="text-primary">But Is It Correct?</span>
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            From nutrition labels to dietary advice, AI can make mistakes that are easy to miss.
+            FoodWise helps you spot potential red flags, understand what&apos;s missing, and learn
+            how to verify information yourself.
+          </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <Link
+              to="/analyze"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground shadow-lift transition hover:bg-forest"
+            >
+              Check an AI Answer <ArrowRight className="h-5 w-5" aria-hidden />
+            </Link>
+            <Link
+              to="/learn"
+              className="inline-flex items-center justify-center rounded-full border border-primary/30 bg-card px-7 py-4 font-semibold text-primary transition hover:border-primary"
+            >
+              Learn How to Verify
+            </Link>
+          </div>
+        </div>
+        <div className="hidden px-3 lg:block">
+          <HeroVisual />
+        </div>
       </section>
-      <div className="space-y-3 mt-4">
-        {LESSONS.map((l) => {
-          const isOpen = open === l.n;
-          return (
-            <div key={l.n} className="rounded-2xl border bg-card shadow-soft">
-              <button onClick={() => setOpen(isOpen ? null : l.n)} aria-expanded={isOpen}
-                className="w-full flex items-center gap-3 p-4 text-left">
-                <span className="grid place-items-center h-9 w-9 shrink-0 rounded-full bg-secondary text-secondary-foreground font-semibold">{l.n}</span>
-                <span className="flex-1 font-semibold">Rule {l.n}: {l.title}</span>
-                <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-              </button>
-              {isOpen && (
-                <div className="px-4 pb-4 grid gap-3 sm:grid-cols-3 text-sm">
-                  <Box icon={<Eye className="h-4 w-4" />} label="What to watch for" text={l.watch} />
-                  <Box icon={<Lightbulb className="h-4 w-4" />} label="Real-world example" text={l.example} />
-                  <Box icon={<CheckSquare className="h-4 w-4" />} label="What to check" text={l.check} />
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <div className="text-center mt-10">
-        <Link to="/analyze" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-soft hover:opacity-90">
-          Now Analyze an AI Answer <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-    </Shell>
-  );
-}
 
-function Box({ icon, label, text }: { icon: React.ReactNode; label: string; text: string }) {
-  return (
-    <div className="rounded-xl bg-muted p-3">
-      <div className="flex items-center gap-1.5 font-semibold text-primary mb-1">{icon}{label}</div>
-      <p className="leading-relaxed">{text}</p>
-    </div>
+      <section className="mx-auto max-w-6xl px-5 pb-16 pt-6">
+        <h2 className="text-2xl font-semibold sm:text-3xl">The 5 FoodWise Rules</h2>
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+          {LESSONS.map((l) => (
+            <Link
+              key={l.n}
+              to="/learn"
+              hash={`rule-${l.n}`}
+              className="group flex flex-col rounded-3xl border border-border bg-card p-4 shadow-soft transition hover:-translate-y-0.5 hover:border-primary last:col-span-2 lg:last:col-span-1"
+            >
+              <span className="flex items-center justify-between">
+                <span className="font-display text-2xl font-semibold text-warm">
+                  {String(l.n).padStart(2, "0")}
+                </span>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-sage text-primary">
+                  <l.icon className="h-5 w-5" aria-hidden />
+                </span>
+              </span>
+              <span className="mt-3 font-semibold leading-snug">{l.title}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </Shell>
   );
 }

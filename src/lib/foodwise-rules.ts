@@ -24,6 +24,8 @@ export interface ResearchCase {
   rules: number[];
 }
 
+// Internal reference data used only by the optional `caseId` checks in analyzeResponse.
+// It is not shown anywhere on the public website.
 export const CASES: ResearchCase[] = [
   {
     id: "castania",

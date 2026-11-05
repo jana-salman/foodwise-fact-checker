@@ -54,9 +54,15 @@
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-bad: var(--bad);
+  --color-sage: var(--sage);
+  --color-sage-deep: var(--sage-deep);
+  --color-forest: var(--forest);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
   --font-display: "Fraunces", Georgia, serif;
-  --font-sans: "Nunito Sans", system-ui, sans-serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
   --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -68,30 +74,39 @@
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.985 0.012 95);
-  --foreground: oklch(0.25 0.05 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.05 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.05 260);
-  --primary: oklch(0.48 0.07 150);
-  --primary-foreground: oklch(0.99 0.01 95);
-  --secondary: oklch(0.93 0.035 145);
-  --secondary-foreground: oklch(0.25 0.05 260);
-  --muted: oklch(0.96 0.015 110);
-  --muted-foreground: oklch(0.45 0.03 260);
-  --accent: oklch(0.93 0.035 145);
-  --accent-foreground: oklch(0.25 0.05 260);
-  --destructive: oklch(0.55 0.2 27);
+  --radius: 1.25rem;
+  /* warm ivory page, deep forest green, soft sage, navy text, warm clay accent */
+  --background: oklch(0.975 0.018 90);
+  --foreground: oklch(0.26 0.045 258);
+  --card: oklch(0.992 0.01 92);
+  --card-foreground: oklch(0.26 0.045 258);
+  --popover: oklch(0.992 0.01 92);
+  --popover-foreground: oklch(0.26 0.045 258);
+  --primary: oklch(0.36 0.07 155);
+  --primary-foreground: oklch(0.98 0.015 92);
+  --secondary: oklch(0.93 0.03 140);
+  --secondary-foreground: oklch(0.26 0.045 258);
+  --muted: oklch(0.955 0.02 95);
+  --muted-foreground: oklch(0.46 0.03 258);
+  --accent: oklch(0.93 0.03 140);
+  --accent-foreground: oklch(0.26 0.045 258);
+  --destructive: oklch(0.52 0.19 27);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0.02 120);
-  --input: oklch(0.9 0.02 120);
-  --ring: oklch(0.6 0.08 150);
-  --ok: oklch(0.62 0.15 150);
-  --warn: oklch(0.78 0.15 75);
-  --bad: oklch(0.58 0.21 27);
-  --shadow-soft: 0 4px 20px -8px oklch(0.25 0.05 260 / 0.15);
+  --border: oklch(0.89 0.022 105);
+  --input: oklch(0.86 0.025 105);
+  --ring: oklch(0.5 0.09 155);
+  --ok: oklch(0.58 0.13 152);
+  --warn: oklch(0.76 0.14 75);
+  --bad: oklch(0.56 0.18 30);
+  --sage: oklch(0.9 0.04 140);
+  --sage-deep: oklch(0.8 0.06 145);
+  --forest: oklch(0.29 0.055 158);
+  --warm: oklch(0.7 0.13 55);
+  --warm-soft: oklch(0.94 0.045 75);
+  --shadow-soft:
+    0 1px 2px oklch(0.26 0.045 258 / 0.04), 0 8px 24px -12px oklch(0.26 0.045 258 / 0.14);
+  --shadow-lift:
+    0 2px 4px oklch(0.26 0.045 258 / 0.05), 0 20px 40px -18px oklch(0.3 0.06 155 / 0.3);
 }
 
 .dark {
@@ -134,8 +149,94 @@
     border-color: var(--color-border);
   }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Gentle animations. All of them switch off for people who prefer less motion. */
+@keyframes fw-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fw-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.fw-page {
+  animation: fw-rise 0.45s ease-out both;
+}
+
+.fw-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+
+.fw-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.fw-float {
+  animation: fw-float 6s ease-in-out infinite;
+}
+
+.fw-grain {
+  background-image: radial-gradient(oklch(0.36 0.07 155 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .fw-page,
+  .fw-float {
+    animation: none;
+  }
+  .fw-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
   }
 }
