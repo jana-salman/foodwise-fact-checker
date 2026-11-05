@@ -17,7 +17,7 @@ export const Route = createFileRoute("/research")({
 });
 
 function Research() {
-  const [sel, setSel] = useState(CASES[0].id);
+  const [sel, setSel] = useState(CASES[0]!.id);
   const c = CASES.find((x) => x.id === sel)!;
   return (
     <Shell>

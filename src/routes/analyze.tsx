@@ -7,7 +7,7 @@ import { LESSONS } from "@/lib/lessons";
 
 export const Route = createFileRoute("/analyze")({
   validateSearch: (s: Record<string, unknown>): { case?: CaseId } =>
-    ["castania", "indomie", "celiac"].includes(s.case as string) ? { case: s.case as CaseId } : {},
+    ["castania", "indomie", "celiac"].includes(s["case"] as string) ? { case: s["case"] as CaseId } : {},
   head: () => ({
     meta: [
       { title: "Analyze an AI Answer — FoodWise" },
@@ -119,7 +119,7 @@ function Analyze() {
             <ul className="list-disc pl-5 text-sm mt-2 space-y-1">{res.takeaways.map((t) => <li key={t}>{t}</li>)}</ul>
             <div className="mt-3 flex flex-wrap gap-2">
               {res.rules.map((n) => (
-                <span key={n} className="rounded-full bg-card px-3 py-1 text-xs">Rule {n}: {LESSONS[n - 1].title}</span>
+                <span key={n} className="rounded-full bg-card px-3 py-1 text-xs">Rule {n}: {LESSONS[n - 1]?.title}</span>
               ))}
             </div>
             <p className="text-xs text-muted-foreground mt-3">This is a screening, not a verification. FoodWise never labels a response scientifically accurate or guaranteed safe.</p>

@@ -91,23 +91,24 @@ export function extractNutritionNumbers(text: string): string[] {
 /** Values explicitly stated as "<n> mg ... per 100 g" (same basis). */
 export function extractPer100Mg(text: string): number[] {
   const re = /(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s?mg[^.\d]{0,30}?per\s?100\s?g/gi;
-  return Array.from(text.matchAll(re)).map((m) => parseNum(m[1]));
+  return Array.from(text.matchAll(re)).map((m) => parseNum(m[1] ?? "0"));
 }
 
 export function checkDifference(text: string): Finding | null {
   const vals = extractPer100Mg(text);
   const diff = text.match(/(?:difference|differ|more by|higher by)[^.\d]{0,30}?(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s?mg/i);
   if (vals.length !== 2 || !diff) return null;
-  const stated = parseNum(diff[1]);
-  const actual = Math.abs(vals[0] - vals[1]);
+  const a = vals[0] ?? 0, b = vals[1] ?? 0;
+  const stated = parseNum(diff[1] ?? "0");
+  const actual = Math.abs(a - b);
   const ok = Math.abs(actual - stated) < 0.6;
   return {
     section: ok ? "provided" : "concerns",
     level: ok ? "amber" : "red",
     title: ok ? "Arithmetic is internally consistent" : "Arithmetic discrepancy detected",
     detail: ok
-      ? `${vals[0].toLocaleString()} − ${vals[1].toLocaleString()} = ${actual.toLocaleString()} mg matches the stated difference. Correct math does not prove the starting values are correct — check them on the label.`
-      : `The stated difference is ${stated.toLocaleString()} mg, but ${vals[0].toLocaleString()} − ${vals[1].toLocaleString()} = ${actual.toLocaleString()} mg.`,
+      ? `${a.toLocaleString()} − ${b.toLocaleString()} = ${actual.toLocaleString()} mg matches the stated difference. Correct math does not prove the starting values are correct — check them on the label.`
+      : `The stated difference is ${stated.toLocaleString()} mg, but ${a.toLocaleString()} − ${b.toLocaleString()} = ${actual.toLocaleString()} mg.`,
     rules: [2],
   };
 }
@@ -137,7 +138,7 @@ export interface AnalysisResult {
   findings: Finding[];
   rules: number[];
   takeaways: string[];
-  caseUsed?: ResearchCase;
+  caseUsed?: ResearchCase | undefined;
 }
 
 export function analyzeResponse(question: string, response: string, caseId?: CaseId): AnalysisResult {
@@ -219,7 +220,7 @@ export function analyzeResponse(question: string, response: string, caseId?: Cas
     4: "For allergies or celiac disease, look for certified labeling and contact the manufacturer or a dietitian.",
     5: "Cross-check with the manufacturer, credible scientific guidance, or a qualified professional.",
   };
-  usedRules.forEach((n) => f.push({ section: "verify", level: "amber", title: `Rule ${n} check`, detail: steps[n], rules: [n] }));
+  usedRules.forEach((n) => f.push({ section: "verify", level: "amber", title: `Rule ${n} check`, detail: steps[n] ?? "", rules: [n] }));
 
   const takeaways = [
     "Confident wording is not the same as correct information.",
